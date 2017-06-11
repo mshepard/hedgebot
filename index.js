@@ -37,7 +37,7 @@ var imgPath = './images/hh.jpg'
 var parser = parse();
 var statements = [];
 var count = 0;
-var interval = 60000;
+var interval = 1000*60*5;
 var currentWeather = {};
 var sensorNames = {
 	temp: 'temperature',
