@@ -1,0 +1,17 @@
+{
+  "name": "hedgebot",
+  "version": "1.0.0",
+  "description": "twitter chatbot for hedgerow hyllie",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "mark shepard <mshepard@andinc.org>",
+  "license": "ISC",
+  "dependencies": {
+    "csv": "^1.1.1",
+    "forecast": "^0.3.2",
+    "tracery-grammar": "^2.7.3",
+    "twit": "^2.2.5"
+  }
+}
