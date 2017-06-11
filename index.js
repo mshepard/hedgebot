@@ -1,12 +1,21 @@
 const Twit = require('twit');
-const config = require('./config.js');
 const parse = require('csv-parse');
 const fs = require('fs');
 const request = require('request');
 const Forecast = require('forecast');
 const tracery = require('tracery-grammar');
 
+/*
 const T = new Twit(config);
+const config = require('./config.js');
+*/
+
+const T = new Twit({
+	consumer_key: process.env.CONSUMER_KEY,
+	consumer_secret: process.env.CONSUMER_SECRET,
+	access_token: process.env.ACCESS_TOKEN,
+	access_token_secret: process.env.ACCESS_TOKEN_SECRET
+ });
 
 const forecast = new Forecast({
   service: 'darksky',

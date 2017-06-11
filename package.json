@@ -9,13 +9,27 @@
   "author": "mark shepard <mshepard@andinc.org>",
   "license": "MIT",
   "repository": {
-	"type": "git",
-	"url": "https://github.com/mshepard/hedgebot.git"
+    "type": "git",
+    "url": "git+https://github.com/mshepard/hedgebot.git"
   },
   "dependencies": {
     "csv": "^1.1.1",
     "forecast": "^0.3.2",
     "tracery-grammar": "^2.7.3",
     "twit": "^2.2.5"
-  }
+  },
+  "engines": {
+    "node": "6.11.0"
+  },
+  "bugs": {
+    "url": "https://github.com/mshepard/hedgebot/issues"
+  },
+  "homepage": "https://github.com/mshepard/hedgebot#readme",
+  "devDependencies": {},
+  "keywords": [
+    "environmental",
+    "sensing",
+    "non-human",
+    "communication"
+  ]
 }
