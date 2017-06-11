@@ -1,1 +1,0 @@
-Hedgebot app for Agrikultura 
