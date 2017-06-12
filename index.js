@@ -179,6 +179,7 @@ var tweetBot = setInterval(function(){
 			// statements
 			statusUpdate = statements[Math.floor(Math.random() * statements.length)];
 			// statusUpdate += ' #agrikultura';
+			tweetOut(statusUpdate);
 			break;
 		case 2:
 			// get current sensor data
@@ -198,6 +199,7 @@ var tweetBot = setInterval(function(){
 						}
 					}
 					// statusUpdate += '#agrikultura';
+					tweetOut(statusUpdate);
 	    		}
 			});
 			break;
@@ -245,12 +247,14 @@ var tweetBot = setInterval(function(){
 						break;
 				}
 				// statusUpdate += ' #agrikultura';
+				tweetOut(statusUpdate);
 			});
 			break;
 
 		case 4:
 			statusUpdate = 'Right now: ' + currentWeather.currently.summary + '. ' + currentWeather.hourly.summary;
 			//statusUpdate += ' #agrikultura';
+			tweetOut(statusUpdate);
 			break;
 
 		case 5:
@@ -279,12 +283,16 @@ var tweetBot = setInterval(function(){
 			break;
 		}
 
-	if (count < 5) {
+	if (count == 5) count = 0;
 
-		statusUpdate += ' ' + Math.floor(Math.random()*1000);
-		console.log('tweet: ' + statusUpdate);
+}, interval);
 
-		T.post('statuses/update', {status: statusUpdate},  function(error, tweet, response) {
+function tweetOut(update) {
+
+		update += ' ' + Math.floor(Math.random()*1000);
+		console.log('tweet: ' + update);
+
+		T.post('statuses/update', {status: update},  function(error, tweet, response) {
 			if(error) {
 				console.dir(error);
 			} else {
@@ -292,10 +300,5 @@ var tweetBot = setInterval(function(){
 			}
 		});
 	}
-
-	if (count == 5) count = 0;
-
-}, interval);
-
-
+}
 
