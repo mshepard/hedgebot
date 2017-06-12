@@ -177,7 +177,7 @@ var tweetBot = setInterval(function(){
 		case 1:
 			// statements
 			var statusUpdate = statements[Math.floor(Math.random() * statements.length)];
-			statusUpdate += ' #agrikultura ';
+			// statusUpdate += ' #agrikultura';
 			break;
 		case 2:
 			// get current sensor data
@@ -196,7 +196,7 @@ var tweetBot = setInterval(function(){
 							statusUpdate += sensorNames[i] + ' is ' + obj[i] + sensorUnits[i] + ', ';
 						}
 					}
-					// statusUpdate += '#agrikultura ';
+					// statusUpdate += '#agrikultura';
 	    		}
 			});
 			break;
@@ -243,13 +243,13 @@ var tweetBot = setInterval(function(){
 						var statusUpdate = 'I do not know what to make of this weather. Do you?';
 						break;
 				}
-				// statusUpdate += ' #agrikultura ';
+				// statusUpdate += ' #agrikultura';
 			});
 			break;
 
 		case 4:
 			statusUpdate = 'Right now it is ' + currentWeather.currently.summary + '. ' + currentWeather.hourly.summary;
-			statusUpdate += ' #agrikultura ';
+			//statusUpdate += ' #agrikultura';
 			break;
 
 		case 5:
@@ -262,7 +262,7 @@ var tweetBot = setInterval(function(){
   				var mediaIdStr = data.media_id_string
   				var altText = 'Snails come to visit'
   				var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
-  				statusUpdate = 'Look who\'s come to visit! #agrikultura ' + Math.floor(Math.random()*1000);
+  				statusUpdate = 'Look who\'s come to visit!' + Math.floor(Math.random()*1000);
 
   				T.post('media/metadata/create', meta_params, function (err, data, response) {
    					if (!err) {
@@ -280,7 +280,7 @@ var tweetBot = setInterval(function(){
 
 	if (count < 5) {
 
-		statusUpdate += Math.floor(Math.random()*1000);
+		statusUpdate += ' ' + Math.floor(Math.random()*1000);
 		console.log('tweet: ' + statusUpdate);
 
 		T.post('statuses/update', {status: statusUpdate},  function(error, tweet, response) {
