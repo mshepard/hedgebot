@@ -80,23 +80,15 @@ fs.createReadStream(script)
 		statements = scriptData;
 	});
 
-// get current weather data
-
-forecast.get([lat, lon], function(err, weather) {
-  if(err) return console.dir(err);
-  	console.dir(weather);
-  	currentWeather = weather;
-});
-
-// get current sensor data
+	// get current sensor data
 
 request.get(sensorDataURL, function (error, response, sensorData) {
-    if(error) {
-    	console.log(error.message);
-    } else {
-    	console.dir(sensorData);
-    	sensorValues = JSON.parse(sensorData);
-    }
+	if(error) {
+		console.log(error.message);
+	} else {
+		console.dir(sensorData);
+		sensorValues = JSON.parse(sensorData);
+	}
 });
 
 // twitter stream
@@ -308,16 +300,15 @@ var tweetBot = setInterval(function(){
 
 function tweetOut(update) {
 
-		update += ' ' + Math.floor(Math.random()*1000);
-		console.log('tweet: ' + update);
+	update += ' ' + Math.floor(Math.random()*1000);
+	console.log('tweet: ' + update);
 
-		T.post('statuses/update', {status: update},  function(error, tweet, response) {
-			if(error) {
-				console.dir(error);
-			} else {
-				console.log('> success');
-			}
-		});
-	}
+	T.post('statuses/update', {status: update},  function(error, tweet, response) {
+		if(error) {
+			console.dir(error);
+		} else {
+			console.log('> success');
+		}
+	});
 }
 
