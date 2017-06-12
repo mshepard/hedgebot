@@ -185,67 +185,66 @@ var tweetBot = setInterval(function(){
 			    if(error) {
  				   	console.log(error.message);
  				} else {
- 		   		console.dir(sensorData);
+ 		   			console.dir(sensorData);
     				sensorValues = JSON.parse(sensorData);
+    				// sensor readings
+					var obj = sensorValues['0'];
+					//console.log(nodes[0].temp)
+					var statusUpdate = 'Currently my ';
+					for (var i in obj) {
+						if (i != 'nodeID' && i != 'timestamp' && i != 'pwlevel') {
+							statusUpdate += sensorNames[i] + ' is ' + obj[i] + sensorUnits[i] + ', ';
+						}
+					}
+					// statusUpdate += '#agrikultura ';
 	    		}
 			});
-			// sensor readings
-			var obj = sensorValues['0'];
-			//console.log(nodes[0].temp)
-			var statusUpdate = 'Currently my ';
-			for (var i in obj) {
-				if (i != 'nodeID' && i != 'timestamp' && i != 'pwlevel') {
-					statusUpdate += sensorNames[i] + ' is ' + obj[i] + sensorUnits[i] + ', ';
-				}
-			}
-			statusUpdate += '#agrikultura ';
 			break;
 
 		case 3:
 		// get current weather data
 			forecast.get([lat, lon], function(err, weather) {
-				  if(err) return console.dir(err);
-				  	console.dir(weather.currently.icon);
-				  	currentWeather = weather;
+				if(err) return console.dir(err);
+				console.dir(weather.currently.icon);
+			  	currentWeather = weather;
+				// weather report
+				switch (currentWeather.currently.icon) {
+					case 'clear-day':
+						var statusUpdate = 'Looking good here. Clear skies all around!';
+						break;
+					case 'clear-night':
+						var statusUpdate = 'Ah a clear night. Can you see the stars?';
+						break;
+					case 'rain':
+						var statusUpdate = 'It is raining again. Good for me, not so much for you, I guess.';
+						break;
+					case 'snow':
+						var statusUpdate = 'Brrr. Winter wonderland. I am going back to sleep';
+						break;
+					case 'sleet':
+						var statusUpdate = 'Watch out for the little ice missiles. This sleet hurts my leaves!';
+						break;
+					case 'wind':
+						var statusUpdate = 'Come close and I will shelter you from the wind.';
+						break;
+					case 'fog':
+						var statusUpdate = 'Fog, fog everywhere. I can barely see you.';
+						break;
+					case 'cloudy':
+						var statusUpdate = 'Clouds, clouds. Hope this sun will come out tomorrow!';
+						break;
+					case 'partly-cloudy-day':
+						var statusUpdate = 'Make up your mind, sun. Either you are with us or against us!';
+						break;
+					case 'partly-cloudy-night':
+						var statusUpdate = 'Dark sky, night sky, clouds come and go. Was that a shooting star?';
+						break;
+					default:
+						var statusUpdate = 'I do not know what to make of this weather. Do you?';
+						break;
+				}
+				// statusUpdate += ' #agrikultura ';
 			});
-			// weather report
-			switch (currentWeather.currently.icon) {
-				case 'clear-day':
-					var statusUpdate = 'Looking good here. Clear skies all around!';
-					break;
-				case 'clear-night':
-					var statusUpdate = 'Ah a clear night. Can you see the stars?';
-					break;
-				case 'rain':
-					var statusUpdate = 'It is raining again. Good for me, not so much for you, I guess.';
-					break;
-				case 'snow':
-					var statusUpdate = 'Brrr. Winter wonderland. I am going back to sleep';
-					break;
-				case 'sleet':
-					var statusUpdate = 'Watch out for the little ice missiles. This sleet hurts my leaves!';
-					break;
-				case 'wind':
-					var statusUpdate = 'Come close and I will shelter you from the wind.';
-					break;
-				case 'fog':
-					var statusUpdate = 'Fog, fog everywhere. I can barely see you.';
-					break;
-				case 'cloudy':
-					var statusUpdate = 'Clouds, clouds. Hope this sun will come out tomorrow!';
-					break;
-				case 'partly-cloudy-day':
-					var statusUpdate = 'Make up your mind, sun. Either you are with us or against us!';
-					break;
-				case 'partly-cloudy-night':
-					var statusUpdate = 'Dark sky, night sky, clouds come and go. Was that a shooting star?';
-					break;
-				default:
-					var statusUpdate = 'I do not know what to make of this weather. Do you?';
-					break;
-			}
-			statusUpdate += ' #agrikultura ';
-
 			break;
 
 		case 4:
