@@ -190,7 +190,7 @@ var tweetBot = setInterval(function(){
     				sensorValues = JSON.parse(sensorData);
     				// sensor readings
 					var obj = sensorValues['0'];
-					//console.log(nodes[0].temp)
+					console.log('my temp: '+ nodes[0].temp);
 					statusUpdate = 'Currently my ';
 					for (var i in obj) {
 						if (i != 'nodeID' && i != 'timestamp' && i != 'pwlevel') {
