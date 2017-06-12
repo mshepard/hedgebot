@@ -263,7 +263,7 @@ var tweetBot = setInterval(function(){
   				var mediaIdStr = data.media_id_string
   				var altText = 'Snails come to visit'
   				var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
-  				statusUpdate = 'Look who\'s come to visit!' + Math.floor(Math.random()*1000);
+  				statusUpdate = 'Look who\'s come to visit! ' + Math.floor(Math.random()*1000);
 
   				T.post('media/metadata/create', meta_params, function (err, data, response) {
    					if (!err) {
