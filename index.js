@@ -71,7 +71,6 @@ grammar.addModifiers(tracery.baseEngModifiers);
 
 var welcomeMsg = 'You can ask me things by tweeting, for example, "@HedgerowHyllie temperature?" to get my current temperature. Other values include humidity, light, moisture, ph.';
 
-var statusUpdate = '';
 // load script
 
 fs.createReadStream(script)
@@ -172,6 +171,7 @@ function tweetEvent(tweet) {
 
 var tweetBot = setInterval(function(){
 
+	var statusUpdate = '';
 	count++;
 
 	switch (count) {
@@ -249,7 +249,7 @@ var tweetBot = setInterval(function(){
 			break;
 
 		case 4:
-			statusUpdate = 'Right now it is ' + currentWeather.currently.summary + '. ' + currentWeather.hourly.summary;
+			statusUpdate = 'Right now: ' + currentWeather.currently.summary + '. ' + currentWeather.hourly.summary;
 			//statusUpdate += ' #agrikultura';
 			break;
 
