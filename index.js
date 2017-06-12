@@ -80,6 +80,25 @@ fs.createReadStream(script)
 		statements = scriptData;
 	});
 
+// get current weather data
+
+forecast.get([lat, lon], function(err, weather) {
+  if(err) return console.dir(err);
+  	console.dir(weather);
+  	currentWeather = weather;
+});
+
+// get current sensor data
+
+request.get(sensorDataURL, function (error, response, sensorData) {
+    if(error) {
+    	console.log(error.message);
+    } else {
+    	console.dir(sensorData);
+    	sensorValues = JSON.parse(sensorData);
+    }
+});
+
 // twitter stream
 
 var stream = T.stream('user');
