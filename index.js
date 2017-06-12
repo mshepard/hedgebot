@@ -267,7 +267,7 @@ var tweetBot = setInterval(function(){
   				var mediaIdStr = data.media_id_string
   				var altText = 'Snails come to visit'
   				var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
-  				statusUpdate = 'Look who\'s come to visit! #agrikultura ' + Math.floor(Math.random()*100);
+  				statusUpdate = 'Look who\'s come to visit! #agrikultura ' + Math.floor(Math.random()*1000);
 
   				T.post('media/metadata/create', meta_params, function (err, data, response) {
    					if (!err) {
@@ -285,7 +285,7 @@ var tweetBot = setInterval(function(){
 
 	if (count < 5) {
 
-		statusUpdate += Math.floor(Math.random()*100);
+		statusUpdate += Math.floor(Math.random()*1000);
 		console.log('tweet: ' + statusUpdate);
 
 		T.post('statuses/update', {status: statusUpdate},  function(error, tweet, response) {
