@@ -37,7 +37,7 @@ var imgPath = './images/hh.jpg'
 var parser = parse();
 var statements = [];
 var count = 0;
-var interval = 1000*60*5;
+var interval = 1000*60*1;
 var currentWeather = {};
 var sensorNames = {
 	temp: 'temperature',
@@ -71,6 +71,7 @@ grammar.addModifiers(tracery.baseEngModifiers);
 
 var welcomeMsg = 'You can ask me things by tweeting, for example, "@HedgerowHyllie temperature?" to get my current temperature. Other values include humidity, light, moisture, ph.';
 
+var statusUpdate = '';
 // load script
 
 fs.createReadStream(script)
@@ -176,7 +177,7 @@ var tweetBot = setInterval(function(){
 	switch (count) {
 		case 1:
 			// statements
-			var statusUpdate = statements[Math.floor(Math.random() * statements.length)];
+			statusUpdate = statements[Math.floor(Math.random() * statements.length)];
 			// statusUpdate += ' #agrikultura';
 			break;
 		case 2:
@@ -190,7 +191,7 @@ var tweetBot = setInterval(function(){
     				// sensor readings
 					var obj = sensorValues['0'];
 					//console.log(nodes[0].temp)
-					var statusUpdate = 'Currently my ';
+					statusUpdate = 'Currently my ';
 					for (var i in obj) {
 						if (i != 'nodeID' && i != 'timestamp' && i != 'pwlevel') {
 							statusUpdate += sensorNames[i] + ' is ' + obj[i] + sensorUnits[i] + ', ';
@@ -210,37 +211,37 @@ var tweetBot = setInterval(function(){
 				// weather report
 				switch (currentWeather.currently.icon) {
 					case 'clear-day':
-						var statusUpdate = 'Looking good here. Clear skies all around!';
+						statusUpdate = 'Looking good here. Clear skies all around!';
 						break;
 					case 'clear-night':
-						var statusUpdate = 'Ah a clear night. Can you see the stars?';
+						statusUpdate = 'Ah a clear night. Can you see the stars?';
 						break;
 					case 'rain':
-						var statusUpdate = 'It is raining again. Good for me, not so much for you, I guess.';
+						statusUpdate = 'It is raining again. Good for me, not so much for you, I guess.';
 						break;
 					case 'snow':
-						var statusUpdate = 'Brrr. Winter wonderland. I am going back to sleep';
+						statusUpdate = 'Brrr. Winter wonderland. I am going back to sleep';
 						break;
 					case 'sleet':
-						var statusUpdate = 'Watch out for the little ice missiles. This sleet hurts my leaves!';
+						statusUpdate = 'Watch out for the little ice missiles. This sleet hurts my leaves!';
 						break;
 					case 'wind':
-						var statusUpdate = 'Come close and I will shelter you from the wind.';
+						statusUpdate = 'Come close and I will shelter you from the wind.';
 						break;
 					case 'fog':
-						var statusUpdate = 'Fog, fog everywhere. I can barely see you.';
+						statusUpdate = 'Fog, fog everywhere. I can barely see you.';
 						break;
 					case 'cloudy':
-						var statusUpdate = 'Clouds, clouds. Hope this sun will come out tomorrow!';
+						statusUpdate = 'Clouds, clouds. Hope this sun will come out tomorrow!';
 						break;
 					case 'partly-cloudy-day':
-						var statusUpdate = 'Make up your mind, sun. Either you are with us or against us!';
+						statusUpdate = 'Make up your mind, sun. Either you are with us or against us!';
 						break;
 					case 'partly-cloudy-night':
-						var statusUpdate = 'Dark sky, night sky, clouds come and go. Was that a shooting star?';
+						statusUpdate = 'Dark sky, night sky, clouds come and go. Was that a shooting star?';
 						break;
 					default:
-						var statusUpdate = 'I do not know what to make of this weather. Do you?';
+						statusUpdate = 'I do not know what to make of this weather. Do you?';
 						break;
 				}
 				// statusUpdate += ' #agrikultura';
