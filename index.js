@@ -79,25 +79,6 @@ fs.createReadStream(script)
 		console.dir(scriptData[0]);
 		statements = scriptData;
 	});
-	
-// get current weather data
-
-forecast.get([lat, lon], function(err, weather) {
-  if(err) return console.dir(err);
-  	console.dir(weather);
-  	currentWeather = weather;
-});
-
-// get current sensor data
-
-request.get(sensorDataURL, function (error, response, sensorData) {
-    if(error) {
-    	console.log(error.message);
-    } else {
-    	console.dir(sensorData);
-    	sensorValues = JSON.parse(sensorData);
-    }
-});
 
 // twitter stream
 
@@ -199,6 +180,15 @@ var tweetBot = setInterval(function(){
 			statusUpdate += ' #agrikultura ';
 			break;
 		case 2:
+			// get current sensor data
+			request.get(sensorDataURL, function (error, response, sensorData) {
+			    if(error) {
+ 				   	console.log(error.message);
+ 				} else {
+ 		   		console.dir(sensorData);
+    				sensorValues = JSON.parse(sensorData);
+	    		}
+			});
 			// sensor readings
 			var obj = sensorValues['0'];
 			//console.log(nodes[0].temp)
@@ -212,6 +202,12 @@ var tweetBot = setInterval(function(){
 			break;
 
 		case 3:
+		// get current weather data
+			forecast.get([lat, lon], function(err, weather) {
+				  if(err) return console.dir(err);
+				  	console.dir(weather.currently.icon);
+				  	currentWeather = weather;
+			});
 			// weather report
 			switch (currentWeather.currently.icon) {
 				case 'clear-day':
