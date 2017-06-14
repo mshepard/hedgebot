@@ -119,7 +119,7 @@ stream.on('tweet', tweetEvent);
 
 function tweetEvent(tweet) {
 
-	console.log(tweet);
+	console.log(tweet.text);
 	var reply_to = tweet.in_reply_to_screen_name;
 	var screenName = tweet.user.screen_name;
 	var txt = tweet.text;
