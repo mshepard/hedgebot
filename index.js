@@ -1,3 +1,7 @@
+// Hedgerow Hyllie twitter bot
+// Mark Shepard
+// http://agrikultura.triennal.se/artworks/hedgerow-hyllie/
+
 const Twit = require('twit');
 const parse = require('csv-parse');
 const fs = require('fs');
