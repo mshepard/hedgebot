@@ -6,8 +6,8 @@ const Forecast = require('forecast');
 const tracery = require('tracery-grammar');
 
 /*
-const T = new Twit(config);
 const config = require('./config.js');
+const T = new Twit(config);
 */
 
 const T = new Twit({
@@ -21,24 +21,30 @@ const forecast = new Forecast({
   service: 'darksky',
   key: '5d2b8e5710f5bd5a6a9068e3c9250208',
   units: 'celcius',
-  cache: true,      // Cache API requests 
-  ttl: {            // How long to cache requests. Uses syntax from moment.js: http://momentjs.com/docs/#/durations/creating/ 
-    minutes: 27,
-    seconds: 45
+  cache: true,     
+  ttl: {            
+    minutes: 14,
+    seconds: 59
   }
 });
 
 
 var lat = '55.5691359';
 var lon = '12.9681254';
+
 var script = './data/HH-script.csv';
 var sensorDataURL ='http://hedgerowhyllie.hopto.org/';
-var imgPath = './images/hh.jpg'
+
 var parser = parse();
+
 var statements = [];
+var images = [];
+
 var count = 0;
-var interval = 1000*60*5;
+var interval = 1000*60*15;
+
 var currentWeather = {};
+
 var sensorNames = {
 	temp: 'temperature',
 	humidity: 'relative humidity',
@@ -59,29 +65,25 @@ var sensorUnits = {
 var sensorValues = {};
 
 var grammar = tracery.createGrammar({
-	'question': ['what','really','you don\'t say','huh','seriously','say what'],
-	'verb': ['think','bet','guess','know','am certain','feel','doubt'],
-	'verb2': ['are being','wish you were','want to be','love being','are acting','hate being'],
-	'qualifier': ['a little','somewhat','totally','really','completely','simply','all too','overly'],
-	'adjective': ['strange','silly','rediculous','human','lazy','simplistic','self-absorbed'],
-	'structure':['#question.capitalize#? I #verb# you #verb2# #qualifier# #adjective#.']
+	'response1': ['Hmm. I\'m not sure what you\'re asking me.', 'What\'s that you say?', 'What?','I didn\'t get that.', 'I\'m having a hard time understanding you.'],
+	'response2': ['Want to know about my internal affairs?','The bees are so loud it\'s hard to hear you.','Do you know how to trap rabbits?','My berries are so ripe. Want some?'],
+	'structure': ['#response1# #response2#']
 })
 
 grammar.addModifiers(tracery.baseEngModifiers); 
 
-var welcomeMsg = 'You can ask me things by tweeting, for example, "@HedgerowHyllie temperature?" to get my current temperature. Other values include humidity, light, moisture, ph.';
+var welcomeMsg = 'You can ask me things by tweeting, for example, "@HedgerowHyllie temperature?" to get my current temperature. You can also ask me about humidity, light, moisture and ph.';
 
 // load script
-
 fs.createReadStream(script)
 	.pipe(parser)
 	.on('data', function (scriptData) {
-		console.dir(scriptData[0]);
-		statements = scriptData;
+		console.log(scriptData[0] + " : " + scriptData[1]);
+		images.push(scriptData[0]);
+		statements.push(scriptData[1]);
 	});
 
-	// get current sensor data
-
+// get current sensor data
 request.get(sensorDataURL, function (error, response, sensorData) {
 	if(error) {
 		console.log(error.message);
@@ -91,11 +93,8 @@ request.get(sensorDataURL, function (error, response, sensorData) {
 	}
 });
 
-// twitter stream
-
 var stream = T.stream('user');
 
-// Anytime someone follows me
 stream.on('follow', followed);
 
 function followed(event) {
@@ -118,63 +117,46 @@ function followed(event) {
 
 stream.on('tweet', tweetEvent);
 
-// Tweet event
 function tweetEvent(tweet) {
 
-	console.log(tweet.text);
-
-	// Who is this in reply to?
+	console.log(tweet);
 	var reply_to = tweet.in_reply_to_screen_name;
-	// Who sent the tweet?
-	var name = tweet.user.screen_name;
-	// What is the text?
+	var screenName = tweet.user.screen_name;
 	var txt = tweet.text;
-	// If we want the conversation thread
 	var id = tweet.id_str;
 
-	// if it is a reply
 	if (reply_to === 'HedgerowHyllie') {
 
-		// parse reply
-		
 		if (/temperature?/i.test(txt)) {
 
-			var replyText = 'Hej @' + name + '. Currently my temperature is ' + sensorValues[0]['temp'] + sensorUnits['temp']; 
+			var replyText = 'Hej @' + screenName + '. Currently my temperature is ' + sensorValues[0]['temp'] + sensorUnits['temp']; 
 		
 		} else if (/humidity?/i.test(txt)) {
 
-			var replyText = 'Hej @' + name + '. Currently my humidity is ' + sensorValues[0]['humidity'] + sensorUnits['humidity']; 
+			var replyText = 'Hej @' + screenName + '. Currently my humidity is ' + sensorValues[0]['humidity'] + sensorUnits['humidity']; 
 
 		} else if (/moisture?/i.test(txt)) {
 
-			var replyText = 'Hej @' + name + '. Currently my soil moisture is ' + sensorValues[0]['moisture'] + sensorUnits['moisture']; 
+			var replyText = 'Hej @' + screenName + '. Currently my soil moisture is ' + sensorValues[0]['moisture'] + sensorUnits['moisture']; 
 
 		} else if (/light?/i.test(txt)) {
 
-			var replyText = 'Hej @' + name + '. Currently my ambient light level is ' + sensorValues[0]['light'] + sensorUnits['light']; 
+			var replyText = 'Hej @' + screenName + '. Currently my ambient light level is ' + sensorValues[0]['light'] + sensorUnits['light']; 
 
 		} else if (/ph?/i.test(txt)) {
 
-			var replyText = 'Hej @' + name + '. Currently my soil ph is ' + sensorValues[0]['ph'] + sensorUnits['ph']; 
+			var replyText = 'Hej @' + screenName + '. Currently my soil ph is ' + sensorValues[0]['ph'] + sensorUnits['ph']; 
 
 		} else {
 
-			// Reply back to the sender
-			var replyText = '@'+name + ' ' + grammar.flatten('#structure#');
+			var replyText = '@'+screenName + ' ' + grammar.flatten('#structure#');
 
 		}
-    	
-    	// Post that tweet
-    	T.post('statuses/update', { status: replyText, in_reply_to_status_id: id}, tweeted);
 
-		// Make sure it worked!
-		function tweeted(err, reply) {
-  			if (err) {
-        			console.log(err.message);
-  			} else {
-    			console.log('Tweeted: ' + reply.text);
-  			}
-		}
+		var params = { status: replyText, in_reply_to_status_id: id};
+
+		tweetOut(params);
+
   	}
 }
 
@@ -182,103 +164,22 @@ function tweetEvent(tweet) {
 
 var tweetBot = setInterval(function(){
 
-	var statusUpdate = '';
+	var params = {status: ''};
 	count++;
 
 	switch (count) {
-		case 1:
-			// statements
-			statusUpdate = statements[Math.floor(Math.random() * statements.length)];
-			// statusUpdate += ' #agrikultura';
-			tweetOut(statusUpdate);
-			break;
-		case 2:
-			// get current sensor data
-			request.get(sensorDataURL, function (error, response, sensorData) {
-			    if(error) {
- 				   	console.log(error.message);
- 				} else {
- 		   			console.dir(sensorData);
-    				sensorValues = JSON.parse(sensorData);
-    				// sensor readings
-					var obj = sensorValues['0'];
-					console.log('my temp: '+ obj.temp);
-					statusUpdate = 'Currently my ';
-					for (var i in obj) {
-						if (i != 'nodeID' && i != 'timestamp' && i != 'pwlevel') {
-							statusUpdate += sensorNames[i] + ' is ' + obj[i] + sensorUnits[i] + ', ';
-						}
-					}
-					// statusUpdate += '#agrikultura';
-					tweetOut(statusUpdate);
-	    		}
-			});
-			break;
 
-		case 3:
-		// get current weather data
-			forecast.get([lat, lon], function(err, weather) {
-				if(err) return console.dir(err);
-				console.dir(weather.currently.icon);
-			  	currentWeather = weather;
-				// weather report
-				switch (currentWeather.currently.icon) {
-					case 'clear-day':
-						statusUpdate = 'Looking good here. Clear skies all around!';
-						break;
-					case 'clear-night':
-						statusUpdate = 'Ah a clear night. Can you see the stars?';
-						break;
-					case 'rain':
-						statusUpdate = 'It is raining again. Good for me, not so much for you, I guess.';
-						break;
-					case 'snow':
-						statusUpdate = 'Brrr. Winter wonderland. I am going back to sleep';
-						break;
-					case 'sleet':
-						statusUpdate = 'Watch out for the little ice missiles. This sleet hurts my leaves!';
-						break;
-					case 'wind':
-						statusUpdate = 'Come close and I will shelter you from the wind.';
-						break;
-					case 'fog':
-						statusUpdate = 'Fog, fog everywhere. I can barely see you.';
-						break;
-					case 'cloudy':
-						statusUpdate = 'Clouds, clouds. Hope this sun will come out tomorrow!';
-						break;
-					case 'partly-cloudy-day':
-						statusUpdate = 'Make up your mind, sun. Either you are with us or against us!';
-						break;
-					case 'partly-cloudy-night':
-						statusUpdate = 'Dark sky, night sky, clouds come and go. Was that a shooting star?';
-						break;
-					default:
-						statusUpdate = 'I do not know what to make of this weather. Do you?';
-						break;
-				}
-				// statusUpdate += ' #agrikultura';
-				tweetOut(statusUpdate);
-			});
-			break;
+		case 1: // statements + images
 
-		case 4:
-			statusUpdate = 'Right now: ' + currentWeather.currently.summary + '. ' + currentWeather.hourly.summary;
-			//statusUpdate += ' #agrikultura';
-			tweetOut(statusUpdate);
-			break;
-
-		case 5:
+			var x = Math.floor(Math.random() * statements.length);
+			var statusUpdate = statements[x] + ' ' + Math.floor(Math.random()*1000);
+			var imgPath = images[x];
 			var b64content = fs.readFileSync(imgPath, { encoding: 'base64' })
 
 			// first we must post the media to Twitter
 			T.post('media/upload', { media_data: b64content }, function (err, data, response) {
-  				// now we can assign alt text to the media, for use by screen readers and
-  				// other text-based presentations and interpreters
   				var mediaIdStr = data.media_id_string
-  				var altText = 'Snails come to visit'
-  				var meta_params = { media_id: mediaIdStr, alt_text: { text: altText } }
-  				statusUpdate = 'Look who\'s come to visit! ' + Math.floor(Math.random()*1000);
+  				var meta_params = { media_id: mediaIdStr }
 
   				T.post('media/metadata/create', meta_params, function (err, data, response) {
    					if (!err) {
@@ -286,24 +187,97 @@ var tweetBot = setInterval(function(){
       					var params = { status: statusUpdate, media_ids: [mediaIdStr] }
 
       					T.post('statuses/update', params, function (err, data, response) {
-        					console.log(data)
+        					// console.log(data)
+        					console.log('> success (media object');
       					})
     				}
   				})
 			})
 			break;
+
+		case 2: // sensor data
+			
+			request.get(sensorDataURL, function (error, response, sensorData) {
+			    if(error) {
+ 				   	console.log(error.message);
+ 				} else {
+ 		   			console.dir(sensorData);
+    				sensorValues = JSON.parse(sensorData);
+					var obj = sensorValues['0'];
+					params.status = 'Currently my ';
+					for (var i in obj) {
+						if (i != 'nodeID' && i != 'timestamp' && i != 'pwlevel') {
+							params.status += sensorNames[i] + ' is ' + obj[i] + sensorUnits[i] + ', ';
+						}
+					}
+					tweetOut(params);
+	    		}
+			});
+			break;
+
+		case 3: // weather data
+
+			forecast.get([lat, lon], function(err, weather) {
+				if(err) return console.dir(err);
+				console.dir(weather.currently.icon);
+			  	currentWeather = weather;
+				// weather report
+				switch (currentWeather.currently.icon) {
+					case 'clear-day':
+						params.status = 'Looking good here. Clear skies all around!';
+						break;
+					case 'clear-night':
+						params.status = 'Ah a clear night. Can you see the stars?';
+						break;
+					case 'rain':
+						params.status = 'It is raining again. Good for me, not so much for you, I guess.';
+						break;
+					case 'snow':
+						params.status = 'Brrr. Winter wonderland. I am going back to sleep';
+						break;
+					case 'sleet':
+						params.status = 'Watch out for the little ice missiles. This sleet hurts my leaves!';
+						break;
+					case 'wind':
+						params.status = 'Come close and I will shelter you from the wind.';
+						break;
+					case 'fog':
+						params.status = 'Fog, fog everywhere. I can barely see you.';
+						break;
+					case 'cloudy':
+						params.status = 'Clouds, clouds. Hope this sun will come out tomorrow!';
+						break;
+					case 'partly-cloudy-day':
+						params.status = 'Make up your mind, sun. Either you are with us or against us!';
+						break;
+					case 'partly-cloudy-night':
+						params.status = 'Dark sky, night sky, clouds come and go. Was that a shooting star?';
+						break;
+					default:
+						params.status = 'I do not know what to make of this weather. Do you?';
+						break;
+				}
+				tweetOut(params);
+			});
+			break;
+
+		case 4: // more weather data
+
+			params.status = 'Right now: ' + currentWeather.currently.summary + '. ' + currentWeather.hourly.summary;
+			tweetOut(params);
+			break;
+
 		}
 
-	if (count == 5) count = 0;
+	if (count == 4) count = 0;
 
 }, interval);
 
-function tweetOut(update) {
+function tweetOut(params) {
 
-	update += ' ' + Math.floor(Math.random()*1000);
-	console.log('tweet: ' + update);
-
-	T.post('statuses/update', {status: update},  function(error, tweet, response) {
+	params.status += ' ' + Math.floor(Math.random()*1000);
+	
+	T.post('statuses/update', params,  function(error, tweet, response) {
 		if(error) {
 			console.dir(error);
 		} else {
