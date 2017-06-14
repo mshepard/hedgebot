@@ -177,7 +177,7 @@ var tweetBot = setInterval(function(){
 
 			var x = Math.floor(Math.random() * statements.length);
 			var statusUpdate = statements[x] + ' ' + Math.floor(Math.random()*1000);
-			var imgPath = images[x];
+			var imgPath = './images/'+images[x];
 			var b64content = fs.readFileSync(imgPath, { encoding: 'base64' })
 
 			// first we must post the media to Twitter
