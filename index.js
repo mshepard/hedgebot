@@ -37,7 +37,7 @@ var lat = '55.5691359';
 var lon = '12.9681254';
 
 var script = './data/HH-script.csv';
-var sensorDataURL ='http://hedgerowhyllie.hopto.org/';
+var sensorDataURL ='http://medialabmx.org/hedgerow/';
 
 var parser = parse();
 
@@ -141,7 +141,7 @@ function tweetEvent(tweet) {
 
 		} else if (/moisture?/i.test(txt)) {
 
-			var replyText = 'Hej @' + screenName + '. Currently my soil moisture is ' + sensorValues[0]['moisture'] + sensorUnits['moisture']; 
+			var replyText = 'Hej @' + screenName + '. Currently my soil moisture is 7' + sensorUnits['moisture']; 
 
 		} else if (/light?/i.test(txt)) {
 
@@ -210,7 +210,7 @@ var tweetBot = setInterval(function(){
 					var obj = sensorValues['0'];
 					params.status = 'Currently my ';
 					for (var i in obj) {
-						if (i != 'nodeID' && i != 'timestamp' && i != 'pwlevel') {
+						if (i != 'nodeID' && i != 'timestamp' && i != 'pwlevel' && i != 'ph') {
 							params.status += sensorNames[i] + ' is ' + obj[i] + sensorUnits[i] + ', ';
 						}
 					}
