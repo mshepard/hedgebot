@@ -76,7 +76,7 @@ var grammar = tracery.createGrammar({
 
 grammar.addModifiers(tracery.baseEngModifiers); 
 
-var welcomeMsg = 'You can ask me things by tweeting, for example, "@HedgerowHyllie temperature?" to get my current temperature. You can also ask me about humidity, light, moisture and pH.';
+var welcomeMsg = 'You can ask me things by tweeting, for example, "@HedgerowHyllie temperature?" to get my current temperature. You can also ask me about humidity, light, and soil moisture.';
 
 // load script
 fs.createReadStream(script)
@@ -141,7 +141,7 @@ function tweetEvent(tweet) {
 
 		} else if (/moisture?/i.test(txt)) {
 
-			var replyText = 'Hej @' + screenName + '. Currently my soil moisture is 7' + sensorUnits['moisture']; 
+			var replyText = 'Hej @' + screenName + '. Currently my soil moisture is ' + sensorValues[0]['moisture'] + sensorUnits['moisture']; 
 
 		} else if (/light?/i.test(txt)) {
 
@@ -149,11 +149,13 @@ function tweetEvent(tweet) {
 
 		} 
 
+		/*
 		else if (/pH?/.test(txt)) {
 
 			var replyText = 'Hej @' + screenName + '. Currently my soil ph is 7.14' + sensorUnits['ph']; 
 
 		} 
+		*/
 
 		else {
 
