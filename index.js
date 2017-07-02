@@ -151,7 +151,7 @@ function tweetEvent(tweet) {
 
 		else if (/pH?/.test(txt)) {
 
-			var replyText = 'Hej @' + screenName + '. Currently my soil ph is ' + sensorValues[0]['ph'] + sensorUnits['ph']; 
+			var replyText = 'Hej @' + screenName + '. Currently my soil ph is 7.14' + sensorUnits['ph']; 
 
 		} 
 
