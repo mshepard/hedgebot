@@ -279,7 +279,7 @@ var tweetBot = setInterval(function(){
 
 function tweetOut(params) {
 
-	params.status += ' [' + Math.floor(Math.random()*1000) += ']';
+	params.status += ' [' + Math.floor(Math.random()*1000) + ']';
 	
 	T.post('statuses/update', params,  function(error, tweet, response) {
 		if(error) {
