@@ -45,7 +45,7 @@ var statements = [];
 var images = [];
 
 var count = 0;
-var interval = 1000*60*15;
+var interval = 1000*60*60;
 
 var currentWeather = {};
 
