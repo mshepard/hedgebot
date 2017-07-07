@@ -133,19 +133,19 @@ function tweetEvent(tweet) {
 
 		if (/temperature?/i.test(txt)) {
 
-			var replyText = 'Hej @' + screenName + '. Currently my temperature is ' + sensorValues[0]['temp'] + sensorUnits['temp']; 
+			var replyText = 'Hej @' + screenName + '. Currently my temperature is ' + sensorValues[1]['temp'] + sensorUnits['temp']; 
 		
 		} else if (/humidity?/i.test(txt)) {
 
-			var replyText = 'Hej @' + screenName + '. Currently my humidity is ' + sensorValues[0]['humidity'] + sensorUnits['humidity']; 
+			var replyText = 'Hej @' + screenName + '. Currently my humidity is ' + sensorValues[1]['humidity'] + sensorUnits['humidity']; 
 
 		} else if (/moisture?/i.test(txt)) {
 
-			var replyText = 'Hej @' + screenName + '. Currently my soil moisture is ' + sensorValues[0]['moisture'] + sensorUnits['moisture']; 
+			var replyText = 'Hej @' + screenName + '. Currently my soil moisture is ' + sensorValues[1]['moisture'] + sensorUnits['moisture']; 
 
 		} else if (/light?/i.test(txt)) {
 
-			var replyText = 'Hej @' + screenName + '. Currently my ambient light level is ' + sensorValues[0]['light'] + sensorUnits['light']; 
+			var replyText = 'Hej @' + screenName + '. Currently my ambient light level is ' + sensorValues[1]['light'] + sensorUnits['light']; 
 
 		} 
 
@@ -213,7 +213,7 @@ var tweetBot = setInterval(function(){
  				} else {
  		   			console.dir(sensorData);
     				sensorValues = JSON.parse(sensorData);
-					var obj = sensorValues['0'];
+					var obj = sensorValues['1'];
 					params.status = 'Currently my ';
 					for (var i in obj) {
 						if (i != 'nodeID' && i != 'timestamp' && i != 'pwlevel' && i != 'ph') {
