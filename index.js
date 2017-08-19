@@ -68,16 +68,6 @@ var sensorUnits = {
 }
 var sensorValues = {};
 
-var grammar = tracery.createGrammar({
-	'response1': ['Hmm. I\'m not sure what you\'re asking me.', 'What\'s that you say?', 'What?','I didn\'t get that.', 'I\'m having a hard time understanding you.'],
-	'response2': ['Want to know about my internal affairs?','The bees are so loud it\'s hard to hear you.','Do you know how to trap rabbits?','My berries are so ripe. Want some?'],
-	'structure': ['#response1# #response2#']
-})
-
-grammar.addModifiers(tracery.baseEngModifiers); 
-
-var welcomeMsg = 'You can ask me things by tweeting, for example, "@HedgerowHyllie temperature?" to get my current temperature. You can also ask me about humidity, light, and soil moisture.';
-
 // load script
 fs.createReadStream(script)
 	.pipe(parser)
@@ -96,79 +86,6 @@ request.get(sensorDataURL, function (error, response, sensorData) {
 		sensorValues = JSON.parse(sensorData);
 	}
 });
-
-var stream = T.stream('user');
-
-stream.on('follow', followed);
-
-function followed(event) {
-  var name = event.source.name;
-  var screenName = event.source.screen_name;
-  console.log('I was followed by: ' + name + ' ' + screenName);
-  var message = {
-  	'screen_name' : screenName,
-  	'text' : 'Hej ' + screenName + '. ' + welcomeMsg
-  }
-	T.post('direct_messages/new', message, messageSent);
-	function messageSent(err, reply) {
-		if (err) {
-			console.log(err.message);
-		} else {
-			console.log('Sent DM: ' + message.text);
-		}
-    }
-}
-
-stream.on('tweet', tweetEvent);
-
-function tweetEvent(tweet) {
-
-	console.log(tweet.text);
-	var reply_to = tweet.in_reply_to_screen_name;
-	var screenName = tweet.user.screen_name;
-	var txt = tweet.text;
-	var id = tweet.id_str;
-
-	if (reply_to === 'HedgerowHyllie') {
-
-		if (/temperature?/i.test(txt)) {
-
-			var replyText = 'Hej @' + screenName + '. Currently my temperature is ' + sensorValues[1]['temp'] + sensorUnits['temp']; 
-		
-		} else if (/humidity?/i.test(txt)) {
-
-			var replyText = 'Hej @' + screenName + '. Currently my humidity is ' + sensorValues[1]['humidity'] + sensorUnits['humidity']; 
-
-		} else if (/moisture?/i.test(txt)) {
-
-			var replyText = 'Hej @' + screenName + '. Currently my soil moisture is ' + sensorValues[1]['moisture'] + sensorUnits['moisture']; 
-
-		} else if (/light?/i.test(txt)) {
-
-			var replyText = 'Hej @' + screenName + '. Currently my ambient light level is ' + sensorValues[1]['light'] + sensorUnits['light']; 
-
-		} 
-
-		/*
-		else if (/pH?/.test(txt)) {
-
-			var replyText = 'Hej @' + screenName + '. Currently my soil ph is 7.14' + sensorUnits['ph']; 
-
-		} 
-		*/
-
-		else {
-
-			var replyText = '@'+screenName + ' ' + grammar.flatten('#structure#');
-
-		}
-
-		var params = { status: replyText, in_reply_to_status_id: id};
-
-		tweetOut(params);
-
-  	}
-}
 
 // tweetbot
 
@@ -213,7 +130,7 @@ var tweetBot = setInterval(function(){
  				} else {
  		   			console.dir(sensorData);
     				sensorValues = JSON.parse(sensorData);
-					var obj = sensorValues['1'];
+					var obj = sensorValues['2'];
 					params.status = 'Currently my ';
 					for (var i in obj) {
 						if (i != 'nodeID' && i != 'timestamp' && i != 'pwlevel' && i != 'ph') {
