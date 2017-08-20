@@ -124,6 +124,7 @@ var tweetBot = setInterval(function(){
 
 		case 2: // sensor data
 			
+			/*
 			request.get(sensorDataURL, function (error, response, sensorData) {
 			    if(error) {
  				   	console.log(error.message);
@@ -140,6 +141,8 @@ var tweetBot = setInterval(function(){
 					tweetOut(params);
 	    		}
 			});
+			*/
+			
 			break;
 
 		case 3: // weather data
